@@ -149,7 +149,104 @@ nav div{
  
 }
 
-.related-movie-item{
+@media only screen and (max-width: 1024px){
+  .posterbg{
+    height:80%;
+  }
+  .contentbox{
+    padding-right:10px;
+  }
+  .plot-para{
+    max-width: 400px;
+}
+  .relatedflex{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+}
+@media only screen and (max-width: 820px){
+  .posterbg{
+    height:50vh;
+  }
+  .contentbox{
+    padding-right:10px;
+  }
+  .relatedflex{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
 
+}
+
+@media only screen and (max-width: 768px){
+  .posterbg{
+    height:50vh;
+  }
+  .contentbox{
+    padding-right:10px;
+  }
+  .contentbox h2{
+    line-height: 40px;
+  }
+  .relatedflex{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+}
+
+@media only screen and (max-width: 600px){
+  .content-wrap{
+    display: flex;
+    flex-direction: column;
+}
+.contentbox{
+  padding:0 20px;
+  gap:10px;
+  
+}
+.contentbox h2{
+  font-size:26px;
+}
+.related-movie{
+  padding:50px 20px;
+}
+.relatedflex{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+}
+
+@media only screen and (max-width: 425px){
+  .content-wrap{
+    display: flex;
+    flex-direction: column;
+}
+.contentbox{
+  padding:0 20px;
+  gap:10px;
+  
+}
+.contentbox h2{
+  font-size:26px;
+}
+.related-movie{
+  padding:50px 20px;
+}
+.relatedflex{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+}
+@media only screen and (max-width:360px){
+    .content-wrap{
+    display: flex;
+    flex-direction: column;
+}
 }
 </style>

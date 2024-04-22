@@ -1,85 +1,82 @@
 <template>
-  <body>
-    <div class="wrapper">
-      <!-- /navbar -->
-      <!-- {{ movies }} -->
-      <nav>
-        <div>
-          <!-- hamburger menu -->
+  <div class="wrapper">
+    <!-- Navbar -->
+    <nav>
+      <div>
+        <!-- Hamburger menu -->
+        <img
+          src="../images/menu icon.svg"
+          alt=""
+          width="30"
+          @click="toggleNavigation"
+        />
+
+        <NuxtLink to="/">
           <img
-            src="../images/menu icon.svg"
-            alt=""
-            width="30"
-            @click="toggleNavigation"
+            src="../images/Netflix_Logo_PMS.png"
+            alt="netflix logo"
+            width="100"
           />
+        </NuxtLink>
+      </div>
 
-          <NuxtLink to="/">
-            <img
-              src="../images/Netflix_Logo_PMS.png"
-              alt="netflix logo"
-              width="100"
-            />
-          </NuxtLink>
-        </div>
+      <div>
+        <img src="../images/search.svg" alt="search" width="30" />
+      </div>
+    </nav>
 
-        <div class='searchBox'>
-          <img src="../images/search.svg" alt="search" width="30" />
-        <input type="text" placeholder="search" v-model="searchQuery">
+    <!-- Navigation Menu -->
+    <div
+      id="menu"
+      class="menu-section"
+      :class="{ 'open-menu': showNavigation, 'closed-menu': !showNavigation }"
+    >
+      <div class="username">
+        <div class="firstLine">
+          <img src="../images/jagun.jpeg" alt="" width="30px" />
+          <h3>Username</h3>
         </div>
-      </nav>
-
-      <!-- THIS IS THE USERNAME FIELD -->
-      <transition enter-to-class="animate__animated animate__slideInLeft" leave-to-class="animate__animated animate__slideOutLeft">
-      <div
-        id="menu"
-        class="menu-section"
-        v-show="showNavigation"
-      >
-        <div class="username">
-          <div class="firstLine">
-            <img src="../images/jagun.jpeg" alt="" width="30px" />
-            <h3>Username</h3>
-          </div>
-          <!-- <div>  <h4>username</h4> </div> -->
-          <div @click="closeNav">
-            <img src="../images/sync-icon.svg" alt="" width="30" />
-          </div>
-        </div>
-
-        <!-- THIS IS THE NOTIFY SECTION WITH ICONS -->
-        <div class="notify">
-          <img src="../images/notifications.svg" alt="" />Notification
-        </div>
-        <div class="downld">
-          <img src="../images/download.icon.svg" alt="" />My Download
-        </div>
-
-        <!-- THIS IS THE MAIN MENU CONTENT -->
-        <div class="main-nav">
-          <NuxtLink to="">Home</NuxtLink>
-          <NuxtLink to="">Dramas</NuxtLink>
-          <NuxtLink to="">Independent</NuxtLink>
-          <NuxtLink to="">Thriller</NuxtLink>
-          <NuxtLink to="">Horror</NuxtLink>
-          <NuxtLink to="">Kids & Family</NuxtLink>
-          <NuxtLink to="">TV Shows</NuxtLink>
-          <NuxtLink to="">Romance</NuxtLink>
-        </div>
-        <div class="footer">
-          <NuxtLink to="">App Setting</NuxtLink>
-          <NuxtLink to="">Account</NuxtLink>
-          <NuxtLink to="">About</NuxtLink>
-          <NuxtLink to="">Help</NuxtLink>
-          <NuxtLink to="">Sign Out</NuxtLink>
+        <!-- <div>  <h4>username</h4> </div> -->
+        <div @click="closeNav">
+          <img src="../images/sync-icon.svg" alt="" width="30" />
         </div>
       </div>
-    </transition > 
-      <!--MOVIE BANNER -->
-      <div
-        class="banner overlay"
-        :style="{ backgroundImage: 'url(' + currentMovie.Poster + ')' }"
-      >
-        <div class="leftText">
+
+      <!-- THIS IS THE NOTIFY SECTION WITH ICONS -->
+      <div class="notify">
+        <img src="../images/notifications.svg" alt="" />Notification
+      </div>
+      <div class="downld">
+        <img src="../images/download.icon.svg" alt="" />My Download
+      </div>
+
+      <!-- THIS IS THE MAIN MENU CONTENT -->
+      <div class="main-nav">
+        <NuxtLink to="">Home</NuxtLink>
+        <NuxtLink to="">Dramas</NuxtLink>
+        <NuxtLink to="">Independent</NuxtLink>
+        <NuxtLink to="">Thriller</NuxtLink>
+        <NuxtLink to="">Horror</NuxtLink>
+        <NuxtLink to="">Kids & Family</NuxtLink>
+        <NuxtLink to="">TV Shows</NuxtLink>
+        <NuxtLink to="">Romance</NuxtLink>
+      </div>
+      <div class="footer">
+        <NuxtLink to="">App Setting</NuxtLink>
+        <NuxtLink to="">Account</NuxtLink>
+        <NuxtLink to="">About</NuxtLink>
+        <NuxtLink to="">Help</NuxtLink>
+        <NuxtLink to="">Sign Out</NuxtLink>
+      </div>
+
+      <!-- Menu content here -->
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+      <!-- Banner content here -->
+
+      <div class="leftText">
           <h2>{{ currentMovie.Title }}</h2>
           <p>{{ currentMovie.Plot }}</p>
           <div class="btns-banner">
@@ -93,12 +90,12 @@
         </div>
 
         <div class="top"></div>
-      </div>
+    </div>
 
-      <!-- NEW RELEASE CAROUSEL -->
-      <div class="carousel">
-        <h2>New Releases</h2>
-        
+    <!-- New Releases Carousel -->
+    <div class="carousel">
+      <!-- Carousel content here -->
+      <h2>New Releases</h2>
         <div class="carousel-inner">
           <div v-for="(mov, imdbID) in visibleMovies" :key="imdbID">
             <NuxtLink :to="`details/${mov.imdbID}`"
@@ -112,11 +109,11 @@
         <button class="right" @click="nextSlide">
           <img src="../images/arrow-next.svg" alt="next" />
         </button>
-      </div>
+    </div>
 
-      <!-- TRENDING NOW -->
-      <div class="carousel trend">
-        <h2>Trending Now</h2>
+    <!-- Trending Carousel -->
+    <div class="carousel trend">
+       <h2>Trending Now</h2>
         <transition name="left">
           <div class="carousel-inner">
             <div
@@ -130,25 +127,25 @@
                 <img :src="mov.Poster" alt=""
               /></NuxtLink>
             </div>
-         
-          
           </div>
         </transition>
-        <button class="prev" @click="prevView">
-        <img src="../images/arrow_back.svg" alt="prev" />
-      </button>
-      <button class="next" @click="nextTrendSlide">
-        <img src="../images/arrow-next.svg" alt="next" />
-      </button>
-      </div>
-     
-     
+      <!-- Carousel content here -->
     </div>
-  </body>
+
+    <!-- Navigation Buttons for Trending Carousel -->
+    <button class="prev" @click="prevView">
+      <img src="../images/arrow_back.svg" alt="prev" />
+    </button>
+    <button class="next" @click="nextTrendSlide">
+      <img src="../images/arrow-next.svg" alt="next" />
+    </button>
+  </div>
 </template>
 
 <script setup>
-
+definePageMeta({
+  middleware: "auth",
+});
 import { ref, computed, onMounted } from "vue";
 import movies from "../store/movies.json";
 
@@ -157,31 +154,23 @@ const showNavigation = ref(false);
 
 // Fetch movie data from the API
 const mov = movies;
+// const { data:movie} = await useFetch('https://freetestapi.com/api/v1/movies');
 
 // Select the first movie from the movies array to display in the banner
-const currentMovie = movies[2] || {};
+const currentMovie = movies[8] || {};
 
+// const title = 'Trending Now'; // Change title to 'Trending Now'
 
 const currentIndex = ref(0);
 const currentTrendIndex = ref(0);
-const searchQuery = ref('') // Data property to store the search query
 
 //We use a computed property visibleMovies to dynamically
 //determine which movies should be visible in the carousel based on the current index.
-// const visibleMovies = computed(() => {
-//   const start = currentIndex.value;
-//   const end = start + 6; //number of movies to display
-//   return movies.slice(start, end);
-// });
-
 const visibleMovies = computed(() => {
-  // Filter movies based on search query
-  return movies.filter(movie =>
-    movie.Title.toLowerCase().includes(searchQuery.value.toLowerCase())
-  ).slice(currentIndex.value, currentIndex.value + 6);
+  const start = currentIndex.value;
+  const end = start + 5; //number of movies to display
+  return movies.slice(start, end);
 });
-
-
 
 const prevSlide = () => {
   if (currentIndex.value > 0) {
@@ -199,26 +188,33 @@ const nextSlide = () => {
   }
 };
 
-//TRENDING // Functions for navigating through movies and trending movies
+//TRENDING
 
-// const visibleTrend = computed(() => {
-//   const start = currentTrendIndex.value;
-//   const end = start + 6; //number of movies to display
-//   return movies.slice(start, end);
-// });
+const visibleTrend = computed(() => {
+  const start = currentTrendIndex.value;
+  const end = start + 3; //number of movies to display
+  return movies.slice(start, end);
+});
 
-const visibleTrend = computed (() =>{
-  //filter movie based of search
-  return movies.filter(movie => movie.Title.toLowerCase().includes(searchQuery.value.toLowerCase()))
-  .slice(currentTrendIndex.value, currentTrendIndex.value + 6)
-})
-
-
+// const prevView = () => {
+//   // Check if currentTrendIndex is initialized and movies array is valid
+//   if (typeof currentTrendIndex.value !== 'undefined' && Array.isArray(movies) && movies.length >= 5) {
+//     // Move to the previous set of trending movies
+//     if (currentTrendIndex.value > 0) {
+//       currentTrendIndex.value -= 1;
+//     } else {
+//       // If already at the beginning, loop to the end of the list
+//       currentTrendIndex.value = movies.length - 3;
+//     }
+//   } else {
+//     console.error('Error: currentTrendIndex or movies array is not properly initialized.');
+//   }
+// };
 
 //Ggold Try
 
 function nextTrendSlide() {
-  if (currentTrendIndex.value < movies.length - 1) {
+  if (currentTrendIndex.value < movies.length - 3) {
     currentTrendIndex.value++;
   } else {
     currentTrendIndex.value = 0;
@@ -257,11 +253,11 @@ const closeNav = () => {
 };
 </script>
 
+
 <style>
+/* CSS styles here */
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
-.animate__animated animate__slideInLeft,.animate__animated animate__slideOutLeft{
-  /* animation-duration: 0.5s; */
-}
+
 nav {
   display: flex;
   justify-content: space-between;
@@ -296,31 +292,6 @@ nav div {
   height: 0;
   padding: 0;
 }
-/* this is style for the search icon at Nav */
-.searchBox{
-  background:rgba(255, 0, 0, 0.553);
-  cursor:pointer;
-  display:flex;
-  align-items: center;
-  padding:6px;
-  border-radius:3px;
-}
-
-.searchBox:hover input{
-  width:300px;
- 
-}
-.searchBox input{
-  width:0;
-  border:none;
-  outline:none;
-  transition:0.3s;
-  background:transparent;
-}
-.searchBox input::placeholder{
-  color:#ffffff;
-}
-/* this is end style for the search icon at Nav */
 .username {
   display: flex;
   justify-content: space-between;
@@ -392,7 +363,6 @@ body {
   gap: 50rem;
   align-items: center;
 }
-
 .leftText {
   padding: 0 5rem;
 }
@@ -457,10 +427,6 @@ body {
 .carousel-inner {
   display: flex;
   gap: 10px;
-  transition:transform 0.5s ease;
-}
-.carousel-inner img{
-  width:300px;
 }
 
 .carousel-slide {
@@ -490,17 +456,16 @@ body {
 .right {
   right: 0;
 }
- .trend {
+.trend {
   position: relative;
-  overflow: hidden;
 }
 
 .prev,
 .next {
   cursor: pointer;
-  position:absolute;
-  height: 50px;
- top: calc(50% - 20px);
+  position: absolute;
+  top: 190%;
+  transform: translateY(-50%);
   background: rgba(0, 0, 0, 0.5);
   color: white;
   padding: 10px;
@@ -511,107 +476,19 @@ body {
 .next {
   right: 0;
 }
-.fade img{
-  width:300px;
+
+/* Fading animation */
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
 }
 
-@media only screen and (max-width: 1024px){
-   
-  .banner{
-    height:60vh;
-    gap:0rem;
+@keyframes fade {
+  from {
+    opacity: 0.4;
   }
-  .leftText p {
-    max-width: 400px;
+  to {
+    opacity: 1;
   }
-  .play , .moreInfo{
-    height:3.5vh;
-  }
-  /* .prev,.next{
-  top:107%;
-  /* transform: translateY(-150%); 
-} */
-}
-
-@media only screen and (max-width: 820px){
-  /* .prev,.next{
-  top:107%;
- 
-} */
-}
-@media only screen and (max-width: 768px){
-  .banner{
-    height:60vh;
-    gap:0rem;
-  }
-  .leftText h2 {
-    font-size: 55px;
-    line-height: 60px;
-  }
-  .leftText p {
-    max-width: 400px;
-  }
-  .trend{
-    padding-bottom:290px;
-  }
-/* .prev,.next{
-  top:115%;
-  transform: translateY(-150%);
-} */
-
-}
-@media only screen and (max-width: 600px){
-	/*Big smartphones [426px -> 600px]*/
-  .play , .moreInfo{
-    height:5vh;
-  }
-  .leftText {
-    padding: 0 3rem;
-}
-.carousel-inner img{
-  max-width:150px;
-}
-.trend{
-    padding-bottom:190px;
-  }
-/* .prev,.next{
-  top:120%;
-} */
-}
-
-@media only screen and (max-width: 425px){
-	/*Small smartphones [325px -> 425px]*/
-  .banner{
-    height:50vh;
-    background-blend-mode: overlay;
-  }
-  .leftText h2 {
-    font-size: 45px;
-    line-height: 60px;
-  }
-  .trend{
-    padding-bottom:100px;
-  }
-  .carousel-inner img{
-  max-width:150px;
-}
-/* .prev,.next{
-  top:120%;
-} */
-
-}
-
-
-@media only screen and (max-width:360px){
-  .trend{
-    padding-bottom:100px;
-  }
-
-/* .prev,.next{
-  top:135%;
-} */
-.carousel-inner img{
-  max-width:150px;
-}
 }
 </style>
