@@ -147,7 +147,17 @@
   </body>
 </template>
 
-<script setup>
+<script setup lang="ts">
+//SEO
+useSeoMeta({
+  title: 'dunni Amazing Site',
+  ogTitle: 'dunni Amazing Site',
+  description: 'This is my amazing site, let me tell you all about it.',
+  ogDescription: 'This is my amazing site, let me tell you all about it.',
+  ogImage: 'https://example.com/image.png',
+  twitterCard: 'summary_large_image',
+})
+//end of SEO
 
 import { ref, computed, onMounted } from "vue";
 import movies from "../store/movies.json";
@@ -166,22 +176,30 @@ const currentIndex = ref(0);
 const currentTrendIndex = ref(0);
 const searchQuery = ref('') // Data property to store the search query
 
-//We use a computed property visibleMovies to dynamically
-//determine which movies should be visible in the carousel based on the current index.
-// const visibleMovies = computed(() => {
-//   const start = currentIndex.value;
-//   const end = start + 6; //number of movies to display
-//   return movies.slice(start, end);
-// });
 
+// Adjust the visibleMovies to handle wrapping logic.
 const visibleMovies = computed(() => {
   // Filter movies based on search query
-  return movies.filter(movie =>
+  const filteredMovies = movies.filter(movie =>
     movie.Title.toLowerCase().includes(searchQuery.value.toLowerCase())
-  ).slice(currentIndex.value, currentIndex.value + 6);
+  );
+  
+  const visibleCount = 6;
+  const totalMovies = filteredMovies.length;
+
+  // Wrap around logic
+  let start = currentIndex.value;
+  let end = start + visibleCount;
+
+  if (end <= totalMovies) {
+    return filteredMovies.slice(start, end);
+  } else {
+    return [
+      ...filteredMovies.slice(start, totalMovies),
+      ...filteredMovies.slice(0, end % totalMovies)
+    ];
+  }
 });
-
-
 
 const prevSlide = () => {
   if (currentIndex.value > 0) {
@@ -192,7 +210,7 @@ const prevSlide = () => {
 };
 
 const nextSlide = () => {
-  if (currentIndex.value < movies.length - 3) {
+  if (currentIndex.value < movies.length - 1) {
     currentIndex.value += 1;
   } else {
     currentIndex.value = 0;
@@ -200,54 +218,48 @@ const nextSlide = () => {
 };
 
 //TRENDING // Functions for navigating through movies and trending movies
-
-// const visibleTrend = computed(() => {
-//   const start = currentTrendIndex.value;
-//   const end = start + 6; //number of movies to display
-//   return movies.slice(start, end);
-// });
-
-const visibleTrend = computed (() =>{
-  //filter movie based of search
-  return movies.filter(movie => movie.Title.toLowerCase().includes(searchQuery.value.toLowerCase()))
-  .slice(currentTrendIndex.value, currentTrendIndex.value + 6)
-})
+// Adjust the visibleMovies to handle wrapping logic.
 
 
 
-//Ggold Try
+// Adjust the visibleTrend to handle wrapping logic.
+const visibleTrend = computed(() => {
+  const filteredMovies = movies.filter(movie =>
+    movie.Title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+  
+  const visibleCount = 6;
+  const totalMovies = filteredMovies.length;
 
-function nextTrendSlide() {
+  // Wrap around logic
+  let start = currentTrendIndex.value;
+  let end = start + visibleCount;
+
+  if (end <= totalMovies) {
+    return filteredMovies.slice(start, end);
+  } else {
+    return [
+      ...filteredMovies.slice(start, totalMovies),
+      ...filteredMovies.slice(0, end % totalMovies)
+    ];
+  }
+});
+
+const nextTrendSlide = () => {
   if (currentTrendIndex.value < movies.length - 1) {
     currentTrendIndex.value++;
   } else {
     currentTrendIndex.value = 0;
   }
-}
+};
 
-function prevView() {
+const prevView = () => {
   if (currentTrendIndex.value > 0) {
     currentTrendIndex.value--;
   } else {
-    currentTrendIndex.value = movies.length - 3;
+    currentTrendIndex.value = movies.length - 1;
   }
-}
-
-// const prevView = () => {
-//   if (currentTrendIndex.value > 0) {
-//     currentTrendIndex.value -= 1;
-//   } else {
-//     currentTrendIndex.value = movies.length - 5;
-//   }
-// };
-
-// const nextTrendSlide = () => {
-//   if (currentTrendIndex.value < movies.length - 5) {
-//     currentTrendIndex.value += 1;
-//   } else {
-//     currentTrendIndex.value = 0;
-//   }
-// };
+};
 
 const toggleNavigation = () => {
   showNavigation.value = !showNavigation.value;
@@ -256,6 +268,7 @@ const closeNav = () => {
   showNavigation.value = false;
 };
 </script>
+
 
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
@@ -458,14 +471,20 @@ body {
   display: flex;
   gap: 10px;
   transition:transform 0.5s ease;
+  scroll-behavior: smooth;
 }
+
 .carousel-inner img{
   width:300px;
+ 
 }
 
 .carousel-slide {
   flex: 0 0 auto;
   margin-right: 10px;
+}
+.carousel-slide:target{
+  border-color:red;
 }
 
 .carousel-slide img {
@@ -500,11 +519,14 @@ body {
   cursor: pointer;
   position:absolute;
   height: 50px;
- top: calc(50% - 20px);
+  top: calc(50% - 20px);
   background: rgba(0, 0, 0, 0.5);
+
   color: white;
   padding: 10px;
+
 }
+
 .prev {
   left: 0;
 }
@@ -514,6 +536,8 @@ body {
 .fade img{
   width:300px;
 }
+
+
 
 @media only screen and (max-width: 1024px){
    
