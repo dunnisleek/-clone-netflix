@@ -238,7 +238,6 @@ const closeNav = () => {
 </script>
 
 
-
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
 .animate__animated animate__slideInLeft,.animate__animated animate__slideOutLeft{
@@ -482,6 +481,9 @@ body {
 
  
 
+.carousel-slide:target{
+  border-color:red;
+}
 .carousel-slide:target{
   border-color:red;
 }
