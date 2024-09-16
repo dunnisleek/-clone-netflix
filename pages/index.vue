@@ -1,5 +1,5 @@
 <template>
-  <body>
+  
     <div class="wrapper">
       <!-- /navbar -->
       <!-- {{ movies }} -->
@@ -100,12 +100,14 @@
         <h2>New Releases</h2>
         
         <div class="carousel-inner">
-          <div v-for="(mov, imdbID) in visibleMovies" :key="imdbID">
-            <NuxtLink :to="`details/${mov.imdbID}`"
-              ><img :src="mov.Poster" alt=""
-            /></NuxtLink>
-          </div>
-        </div>
+    <div v-for="(group, index) in groupedMovies" :key="index" class="carousel-slide-group">
+      <div v-for="movie in group" :key="movie.imdbID" class="carousel-slide">
+        <NuxtLink :to="`/details/${movie.imdbID}`">
+          <img :src="movie.Poster" alt="Movie Poster" />
+        </NuxtLink>
+      </div>
+    </div>
+  </div>
         <button class="left" @click="prevSlide">
           <img src="../images/arrow_back.svg" alt="prev" />
         </button>
@@ -115,17 +117,15 @@
       </div>
 
       <!-- TRENDING NOW -->
-      <div class="carousel trend">
+      <!-- <div class="carousel trend">
         <h2>Trending Now</h2>
-        <transition name="left">
+       
           <div class="carousel-inner">
             <div
               v-for="(mov, imdbID) in visibleTrend"
               :key="imdbID"
-              class="fade"
+              class="carousel-slide"
             >
-              <!-- <img :src="mov.Poster" alt="" /> -->
-
               <NuxtLink :to="`details/${mov.imdbID}`">
                 <img :src="mov.Poster" alt=""
               /></NuxtLink>
@@ -133,7 +133,7 @@
          
           
           </div>
-        </transition>
+        
         <button class="prev" @click="prevView">
         <img src="../images/arrow_back.svg" alt="prev" />
       </button>
@@ -142,17 +142,25 @@
       </button>
       </div>
      
-     
+      -->
     </div>
-  </body>
+ 
 </template>
-
-<script setup>
-
-import { ref, computed, onMounted } from "vue";
+<script setup lang="ts">
+import { ref, computed } from "vue";
 import movies from "../store/movies.json";
 
-//for the hamburger menu
+// SEO
+useSeoMeta({
+  title: 'dunni Amazing Site',
+  ogTitle: 'dunni Amazing Site',
+  description: 'This is my amazing site, let me tell you all about it.',
+  ogDescription: 'This is my amazing site, let me tell you all about it.',
+  ogImage: 'https://example.com/image.png',
+  twitterCard: 'summary_large_image',
+})
+
+// For the hamburger menu
 const showNavigation = ref(false);
 
 // Fetch movie data from the API
@@ -161,106 +169,88 @@ const mov = movies;
 // Select the first movie from the movies array to display in the banner
 const currentMovie = movies[2] || {};
 
-
 const currentIndex = ref(0);
 const currentTrendIndex = ref(0);
 const searchQuery = ref('') // Data property to store the search query
 
-//We use a computed property visibleMovies to dynamically
-//determine which movies should be visible in the carousel based on the current index.
-// const visibleMovies = computed(() => {
-//   const start = currentIndex.value;
-//   const end = start + 6; //number of movies to display
-//   return movies.slice(start, end);
-// });
-
-const visibleMovies = computed(() => {
-  // Filter movies based on search query
-  return movies.filter(movie =>
-    movie.Title.toLowerCase().includes(searchQuery.value.toLowerCase())
-  ).slice(currentIndex.value, currentIndex.value + 6);
+const groupedMovies = computed(() => {
+  const groups = [];
+  for (let i = 0; i < movies.length; i += 5) {
+    groups.push(movies.slice(i, i + 5));
+  }
+  return groups;
 });
 
-
-
-const prevSlide = () => {
-  if (currentIndex.value > 0) {
-    currentIndex.value -= 1;
-  } else {
-    currentIndex.value = movies.length - 1;
-  }
-};
+const currentGroupIndex = ref(0);
 
 const nextSlide = () => {
-  if (currentIndex.value < movies.length - 3) {
-    currentIndex.value += 1;
-  } else {
-    currentIndex.value = 0;
-  }
+  const carouselInner = document.querySelector('.carousel-inner');
+  const slideWidth = carouselInner.clientWidth; // Width of one group of slides
+  carouselInner.scrollBy({ left: slideWidth, behavior: 'smooth' });
+
+  currentGroupIndex.value = (currentGroupIndex.value + 1) % groupedMovies.value.length;
 };
 
-//TRENDING // Functions for navigating through movies and trending movies
+const prevSlide = () => {
+  const carouselInner = document.querySelector('.carousel-inner');
+  const slideWidth = carouselInner.clientWidth; // Width of one group of slides
+  carouselInner.scrollBy({ left: -slideWidth, behavior: 'smooth' });
 
+  currentGroupIndex.value = (currentGroupIndex.value - 1 + groupedMovies.value.length) % groupedMovies.value.length;
+};
+
+
+
+
+// Computed property for visible trending movies in the carousel
 // const visibleTrend = computed(() => {
-//   const start = currentTrendIndex.value;
-//   const end = start + 6; //number of movies to display
-//   return movies.slice(start, end);
+//   return movies.slice(currentTrendIndex.value, currentTrendIndex.value + 5);
 // });
 
-const visibleTrend = computed (() =>{
-  //filter movie based of search
-  return movies.filter(movie => movie.Title.toLowerCase().includes(searchQuery.value.toLowerCase()))
-  .slice(currentTrendIndex.value, currentTrendIndex.value + 6)
-})
-
-
-
-//Ggold Try
-
-function nextTrendSlide() {
-  if (currentTrendIndex.value < movies.length - 1) {
-    currentTrendIndex.value++;
-  } else {
-    currentTrendIndex.value = 0;
-  }
-}
-
-function prevView() {
-  if (currentTrendIndex.value > 0) {
-    currentTrendIndex.value--;
-  } else {
-    currentTrendIndex.value = movies.length - 3;
-  }
-}
-
-// const prevView = () => {
-//   if (currentTrendIndex.value > 0) {
-//     currentTrendIndex.value -= 1;
-//   } else {
-//     currentTrendIndex.value = movies.length - 5;
-//   }
-// };
-
+// Next trending slide button functionality
 // const nextTrendSlide = () => {
-//   if (currentTrendIndex.value < movies.length - 5) {
-//     currentTrendIndex.value += 1;
-//   } else {
-//     currentTrendIndex.value = 0;
-//   }
+//   const carouselInner = document.querySelector('.trend .carousel-inner');
+//   const slideWidth = carouselInner.clientWidth / 5; // Assuming 5 slides visible
+//   carouselInner.scrollBy({ left: slideWidth, behavior: 'smooth' });
+
+//   currentTrendIndex.value = (currentTrendIndex.value + 5) % movies.length;
 // };
 
+// Previous trending slide button functionality
+// const prevTrendSlide = () => {
+//   const carouselInner = document.querySelector('.trend .carousel-inner');
+//   const slideWidth = carouselInner.clientWidth / 5; // Assuming 5 slides visible
+//   carouselInner.scrollBy({ left: -slideWidth, behavior: 'smooth' });
+
+//   currentTrendIndex.value = (currentTrendIndex.value - 5 + movies.length) % movies.length;
+// };
+
+
+// Function to toggle the hamburger menu
 const toggleNavigation = () => {
   showNavigation.value = !showNavigation.value;
 };
+
+// Function to close the hamburger menu
 const closeNav = () => {
   showNavigation.value = false;
 };
 </script>
 
+
+
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
 .animate__animated animate__slideInLeft,.animate__animated animate__slideOutLeft{
   /* animation-duration: 0.5s; */
+}
+
+.animate__animated.animate__slideInLeft,
+.animate__animated.animate__slideOutLeft {
+  animation-duration: 0.5s;
+}
+html {
+ scroll-behavior: smooth;
 }
 nav {
   display: flex;
@@ -305,7 +295,20 @@ nav div {
   padding:6px;
   border-radius:3px;
 }
+.carousel-inner {
+  display: flex;
+  overflow-x: hidden;
 
+}
+.carousel-slide-group {
+  display: flex;
+  flex-shrink: 0;
+  width: 100%; /* Adjust this based on your layout */
+}
+
+.carousel-slide {
+  flex: 1;
+}
 .searchBox:hover input{
   width:300px;
  
@@ -443,6 +446,8 @@ body {
 
 .carousel {
   padding: 3rem 10px;
+
+
 }
 .carousel h2 {
   font-size: 25px;
@@ -456,20 +461,33 @@ body {
 
 .carousel-inner {
   display: flex;
-  gap: 10px;
-  transition:transform 0.5s ease;
+  overflow: hidden;
+  scroll-behavior: smooth; /* Ensures smooth scrolling */
+
 }
+
 .carousel-inner img{
-  width:300px;
+  width:200px;
+ 
 }
 
 .carousel-slide {
+ 
   flex: 0 0 auto;
   margin-right: 10px;
+
+  transition: transform 0.5s ease-in-out; /* Smooth transition */
+
+}
+
+ 
+
+.carousel-slide:target{
+  border-color:red;
 }
 
 .carousel-slide img {
-  width: 300px;
+  width: 270px;
   max-width: 100%;
 }
 
@@ -483,6 +501,7 @@ body {
   background: rgba(0, 0, 0, 0.5);
   color: white;
   padding: 10px;
+
 }
 .left {
   left: 0;
@@ -500,11 +519,14 @@ body {
   cursor: pointer;
   position:absolute;
   height: 50px;
- top: calc(50% - 20px);
+  top: calc(50% - 20px);
   background: rgba(0, 0, 0, 0.5);
+
   color: white;
   padding: 10px;
+
 }
+
 .prev {
   left: 0;
 }
@@ -515,6 +537,17 @@ body {
   width:300px;
 }
 
+.slide-enter-active, .slide-leave-active {
+  transition: transform 0.5s ease-in-out;
+}
+
+.slide-enter, .slide-leave-to /* .slide-leave-active in <2.1.8 */ {
+  transform: translateX(100%);
+}
+
+.slide-enter-to, .slide-leave /* .slide-enter-active in <2.1.8 */ {
+  transform: translateX(0);
+}
 @media only screen and (max-width: 1024px){
    
   .banner{
@@ -527,10 +560,7 @@ body {
   .play , .moreInfo{
     height:3.5vh;
   }
-  /* .prev,.next{
-  top:107%;
-  /* transform: translateY(-150%); 
-} */
+
 }
 
 @media only screen and (max-width: 820px){

@@ -48,8 +48,12 @@
 
 </template>
 
-<script setup>
-
+<script setup lang="ts">
+useSeoMeta({
+  title: 'Login page',
+  ogTitle: 'login page',
+  description: 'This is my amazing login, let me tell you all about it.',
+})
 </script>
 
 <style scoped>
